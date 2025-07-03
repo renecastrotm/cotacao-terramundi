@@ -18,7 +18,10 @@ app.get('/cotacao', async (req, res) => {
     });
 
     const $ = cheerio.load(response.data);
-    const valorTexto = $('span[data-test="instrument-price-last"]').first().text().trim();
+    const span = $('span[data-test="instrument-price-last"]').first();
+    const fallback = $('div.instrument-price_last__3ItgI').first(); // alternativa com base em classe
+    const valorTexto = (span.text().trim() || fallback.text().trim());
+
     const valor = parseFloat(valorTexto.replace('.', '').replace(',', '.'));
 
     const ajustado = valor / 0.97;
